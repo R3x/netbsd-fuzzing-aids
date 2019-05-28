@@ -13,8 +13,13 @@ The image created comes with an ssh key which can be used to log in as root.
 
 The script is written with the assumption of a Linux environment.
 
+To setup the environment run
 `
 ./install_netbsd.sh -s
+`
+
+To install a NetBSD image run
+`
 ./install_netbsd.sh -i
 `
 
