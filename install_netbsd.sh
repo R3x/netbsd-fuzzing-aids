@@ -19,17 +19,25 @@ do
 	case "${opt}" in
 		s)
 			echo "Setting up Anita"
+			# clearing previous output
+			rm -rf anita/
+
+			# APT - installs that might be needed
+			#sudo apt-get install genisoimage
+			#sudo apt-get install python-pip
+
 			pip install --upgrade pexpect
 			git clone https://github.com/gson1703/anita.git anita/
 			
 			# Modifications neccesary on Ubuntu 
-			sed -e 's_#!/usr/pkg/bin/python2.4_#!/usr/bin/python_' anita/anita > temp_anita
-			mv temp_anita anita/anita
-			rm temp_anita
-			chmod +x anita/anita
+			sed -i -e 's_#!/usr/pkg/bin/python2.4_#!/usr/bin/python_' anita/anita 
+			
 			;;
 		i)
 			echo "Installing a NetBSD image"
+			# removing previous stuff
+			rm -rf out
+			
 			# Output directory
 			mkdir out/
 
@@ -42,7 +50,7 @@ do
 
 			# Setup ssh
 			./anita/anita --run="\
-echo -e 'dhcpcd=YES\nsshd=YES' >> /etc/rc.conf; \
+echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO' >> /etc/rc.conf; \
 mkdir .ssh; \
 echo $SSHKEY > .ssh/authorized_keys;  \
 sed -e 's/^#PermitRootLogin [a-z][a-z-]*$/PermitRootLogin yes/' /etc/ssh/sshd_config > sshd_config; \
@@ -52,7 +60,7 @@ poweroff; \
 
 			# Copy image key pair
 			mv key* out/
-			mv wd0.img out/netbsd.img
+			mv wd0.img out/image
 
 			# Clean current dir
 			rm -rf download
