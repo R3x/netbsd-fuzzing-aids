@@ -51,10 +51,11 @@ do
 			# Setup ssh
 			./anita/anita --run="\
 echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO' >> /etc/rc.conf; \
+touch /fastboot; \
 mkdir .ssh; \
 echo $SSHKEY > .ssh/authorized_keys;  \
-sed -e 's/^#PermitRootLogin [a-z][a-z-]*$/PermitRootLogin yes/' /etc/ssh/sshd_config > sshd_config; \
-mv sshd_config /etc/ssh/sshd_config; \
+sed -i -e 's/^#PermitRootLogin [a-z][a-z-]*$/PermitRootLogin yes/' sshd_config; \
+mknod -rR /dev/kcov c 346 0; \
 poweroff; \
 			" --persist --no-install --workdir=./ interact http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/latest/amd64/
 
