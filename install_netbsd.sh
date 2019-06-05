@@ -50,14 +50,14 @@ do
 
 			# Setup ssh
 			./anita/anita --run="\
-echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO' >> /etc/rc.conf; \
+echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO\ncron=NO\nmakemandb=NO\ncgd=NO' >> /etc/rc.conf; \
 touch /fastboot; \
 mkdir .ssh; \
 echo $SSHKEY > .ssh/authorized_keys;  \
 sed -i -e 's/^#PermitRootLogin [a-z][a-z-]*$/PermitRootLogin yes/' /etc/ssh/sshd_config; \
 sed -i -e 's/^ddb.onpanic?=0/ddb.onpanic=1/' /etc/sysctl.conf; \
 echo -e 'ddb.commandonenter=\"show panic;bt;show registers;ps;show all locks;show all pages;show all pools\"\nddb.lines=0\nddb.maxwidth=0' >> /etc/sysctl.conf; \
-mknod -rR /dev/kcov c 346 0; \
+/etc/MAKEDEV kcov; \
 poweroff; \
 			" --persist --no-install --workdir=./ interact http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/latest/amd64/
 
