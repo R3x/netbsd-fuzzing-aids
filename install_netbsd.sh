@@ -50,7 +50,7 @@ do
 
 			# Setup ssh
 			./anita/anita --run="\
-echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO\ncron=NO\nmakemandb=NO\ncgd=NO' >> /etc/rc.conf; \
+echo -e 'dhcpcd=YES\nsshd=YES\npostfix=NO\ncron=NO\nmakemandb=NO\ncgd=NO\ninetd=NO' >> /etc/rc.conf; \
 touch /fastboot; \
 mkdir .ssh; \
 echo $SSHKEY > .ssh/authorized_keys;  \
