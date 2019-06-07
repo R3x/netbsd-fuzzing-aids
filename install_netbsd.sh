@@ -42,7 +42,7 @@ do
 			mkdir out/
 
 			# Install from release tree
-			./anita/anita --workdir=./ --disk-size=8G --memory-size=1024M install http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/latest/amd64/
+			./anita/anita --workdir=./ --disk-size=2G --memory-size=1024M install http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/latest/amd64/
 
 			# Setup ssh keys
 			ssh-keygen -t rsa -f key -N ""
@@ -57,7 +57,8 @@ echo $SSHKEY > .ssh/authorized_keys;  \
 sed -i -e 's/^#PermitRootLogin [a-z][a-z-]*$/PermitRootLogin yes/' /etc/ssh/sshd_config; \
 sed -i -e 's/^ddb.onpanic?=0/ddb.onpanic=1/' /etc/sysctl.conf; \
 echo -e 'ddb.commandonenter=\"show panic;bt;show registers;ps;show all locks;show all pages;show all pools\"\nddb.lines=0\nddb.maxwidth=0' >> /etc/sysctl.conf; \
-/etc/MAKEDEV kcov; \
+cd /dev; \
+./MAKEDEV kcov; \
 poweroff; \
 			" --persist --no-install --workdir=./ interact http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/latest/amd64/
 
