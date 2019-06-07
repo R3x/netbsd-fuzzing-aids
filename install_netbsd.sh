@@ -6,6 +6,7 @@ usage()
 	echo "Options :  "
 	echo "	-s : Download and setup anita"
 	echo "	-i : install a NetBSD image"
+	echo "	-p : Patch Anita(if -i doesn't work)"
 }
 
 if [ $# -eq 0 ]
@@ -26,7 +27,7 @@ do
 			#sudo apt-get install genisoimage
 			#sudo apt-get install python-pip
 
-			pip install --upgrade pexpect
+			pip2.7 install --upgrade pexpect
 			git clone https://github.com/gson1703/anita.git anita/
 			
 			# Modifications neccesary on Ubuntu 
@@ -68,6 +69,11 @@ poweroff; \
 
 			# Clean current dir
 			rm -rf download
+			;;
+		p)
+			echo "Applying patches to anita"
+			line=$(($(grep -nr "\"cdrom\", bootcd" anita/anita.py | awk -F ":" '{print $1}') + 1))
+			sed -i "$line s/True/False" anita/anita.py 
 			;;
 		*)
 			echo "Invalid Option "
