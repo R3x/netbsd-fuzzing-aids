@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 usage()
 {
@@ -15,7 +15,7 @@ then
     exit
 fi
 
-while getopts "si" opt
+while getopts "sip" opt
 do
 	case "${opt}" in
 		s)
@@ -73,7 +73,7 @@ poweroff; \
 		p)
 			echo "Applying patches to anita"
 			line=$(($(grep -nr "\"cdrom\", bootcd" anita/anita.py | awk -F ":" '{print $1}') + 1))
-			sed -i "$line s/True/False" anita/anita.py 
+			sed -i "$line s/True/False/" anita/anita.py 
 			;;
 		*)
 			echo "Invalid Option "
