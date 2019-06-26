@@ -8,6 +8,8 @@ listed_syscalls = []
 listed_syscalls_names = {}
 unmatched_functions = []
 missing_syscalls = {}
+syscall_arguments = {}
+netbsd_arguments = {}
 
 def sanity_check():
     obsolete=[]
@@ -36,7 +38,19 @@ def syzkaller_check(path):
         if filename.endswith(".txt"):
             content = open(os.path.join(path, filename)).readlines()
             syzkaller_file_parser(content)
+    find_missing_syscalls()
+    extract_syscall_args()
     print_syscalls()
+    print_syscall_args()
+
+def extract_syscall_args():
+    syz = re.compile("\/\* syscall:(.*)\*\/")
+    name = re.compile("\/\*.*?: \"(.*?)\".*\*\/")
+    content = open("syscall.h").readlines()
+    for line in content:
+        if syz.match(line):
+            syscall_name = name.match(line).groups()[0]
+            netbsd_arguments[syscall_name] = line.split("args: ")[1].split("*/")[0].replace("\" \"",",").strip("\"").split(",")
 
 def syzkaller_file_parser(content):
     syz = re.compile("(.*?)\(.*\).*")
@@ -47,11 +61,12 @@ def syzkaller_file_parser(content):
                 if cmp(line.split('(')[0].split('$')[0], syscall) == 0:
                     listed_syscalls.append(syscallno)
                     listed_syscalls_names[syscallno] = syscall
+                    syscall_arguments[syscallno] = line.split("(")[1].split(")")[0].split(", ")
                     flag = 1
             if flag == 0:
                 unmatched_functions.append(line)
 
-def print_syscalls():
+def find_missing_syscalls():
     ctr = 0
     for i in sorted(set(listed_syscalls)):
         if ctr != i:
@@ -62,6 +77,24 @@ def print_syscalls():
                 ctr = ctr + 1
         #print "Syscall No " + str(i) + " : " + syzcalls[i]
         ctr = ctr + 1 
+
+def print_syscall_args():
+    print "="*50
+    print "Existing syscall argument comparison"
+    print "="*50
+    for syscallno, syscall in listed_syscalls_names.items():
+        print "Syscall " + syscall
+        print "Syzkaller Arguments : ",
+        for argument in syscall_arguments[syscallno]:
+            print argument + " ; ",
+        print
+        print "NetBSD Arguments : ",
+        for argument in netbsd_arguments[syscall]:
+            print argument + " ; ",
+        print
+        print "+"*50
+    
+def print_syscalls():
     print "="*50
     print "Existing syscalls"
     print "="*50
