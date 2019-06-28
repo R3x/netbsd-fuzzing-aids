@@ -1,5 +1,8 @@
 #include <test.h>
 
+typedef unsigned long   __greg_t;
+typedef __greg_t        __gregset_t[_NGREG];
+
 typedef struct {
         __gregset_t     __gregs;
         __greg_t        _mc_tlsbase;
