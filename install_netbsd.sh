@@ -61,7 +61,8 @@ sed -i -e 's/^ddb.onpanic?=0/ddb.onpanic=1/' /etc/sysctl.conf; \
 echo -e 'ddb.commandonenter=\"show panic;bt;show registers;ps;show all locks;show all pages;show all pools\"\nddb.lines=0\nddb.maxwidth=0' >> /etc/sysctl.conf; \
 cd /dev; \
 ./MAKEDEV kcov; \
-./MAKEDEV vhci; \
+./MAKEDEV fault; \
+for w in \`seq 0 7\`; do ./MAKEDEV vhci\$w; done; \
 for w in \`seq 0 64\`; do ./MAKEDEV tap\$w; done; \
 for w in \`seq 0 64\`; do ./MAKEDEV tun\$w; done; \
 poweroff; \
